@@ -218,12 +218,16 @@ trait ParsedownGravTrait
      */
     protected function convertUrl($markdown_url)
     {
+        self::$grav['debugger']->addMessage($markdown_url);
         // if absolute and starts with a base_url move on
         if ($this->base_url != '' && strpos($markdown_url, $this->base_url) === 0) {
             return $markdown_url;
         // if its absolute and starts with /
         } elseif (strpos($markdown_url, '/') === 0) {
             return $this->base_url . $markdown_url;
+        // if it's only a fragment
+        } elseif (strpos($markdown_url, '#') === 0) {
+            return $markdown_url;
         } else {
             $relative_path = $this->base_url . $this->page->route();
             $real_path = $this->page->path() . '/' . parse_url($markdown_url, PHP_URL_PATH);
